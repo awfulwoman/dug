@@ -104,9 +104,9 @@ steps:
   commands:
   - echo "Publishing tagged version ${DRONE_TAG}"
   - sed -i 's~<Version>0.0.1</Version>~<Version>${DRONE_TAG}</Version>~' ./cli/dug.csproj #Set the Version in the csproj, its the only way to get the packaging tools to respect the version.
-  when:
-    ref:
-    - refs/tags/*.*.*
+  # when:
+  #   ref:
+  #   - refs/tags/*.*.*
 
 - name: docker  
   image: plugins/docker
@@ -120,9 +120,9 @@ steps:
     tags: 
      - ${DRONE_TAG}
      - latest
-  when:
-    ref:
-    - refs/tags/*.*.*
+  # when:
+  #   ref:
+  #   - refs/tags/*.*.*
     
 
 - name: package linux
@@ -139,9 +139,9 @@ steps:
   - dotnet deb -c Release -r linux-arm64 -o ./publish ./cli/dug.csproj
   - dotnet rpm -c Release -r linux-x64 -o ./publish ./cli/dug.csproj
   - dotnet tarball -c Release -r linux-x64 -o ./publish ./cli/dug.csproj
-  when:
-    ref:
-    - refs/tags/*.*.*
+  # when:
+  #   ref:
+  #   - refs/tags/*.*.*
   depends_on:
   - prepare_publishing
 
@@ -152,9 +152,9 @@ steps:
   commands:
   - sed -i 's~<version>0.0.1</version>~<version>${DRONE_TAG}</version>~' ./.ci/win/dug.nuspec #Set the Version in the nuspec
   - dotnet publish -r win-x64 -c Release -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true --self-contained true -o ./.ci/win/output ./cli
-  when:
-    ref:
-    - refs/tags/*.*.*
+  # when:
+  #   ref:
+  #   - refs/tags/*.*.*
   depends_on:
   - prepare_publishing
 
@@ -168,9 +168,9 @@ steps:
   commands:
   - choco pack ./.ci/win/dug.nuspec --allow-unofficial --out ./.ci/win
   - choco push ./.ci/win/dug.${DRONE_TAG}.nupkg --allow-unofficial --api-key $${CHOCO_API_KEY} --source https://push.chocolatey.org/
-  when:
-    ref:
-    - refs/tags/*.*.*
+  # when:
+  #   ref:
+  #   - refs/tags/*.*.*
   depends_on:
   - build win-x64
 
@@ -183,9 +183,9 @@ steps:
   - mv ./publish/dug ./publish/dug-osx-x64 #Rename the binary to its architecture type
   - dotnet tool restore
   - dotnet tarball -c Release -r osx-x64 -o ./publish ./cli/dug.csproj
-  when:
-    ref:
-    - refs/tags/*.*.*
+  # when:
+  #   ref:
+  #   - refs/tags/*.*.*
   depends_on:
   - prepare_publishing
 
