@@ -130,11 +130,13 @@ steps:
   environment:
       DOTNET_CLI_TELEMETRY_OPTOUT: 1
   commands:
+  # Setup .net 6 - start
   - apt update && apt install wget
   - wget https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
   - dpkg -i packages-microsoft-prod.deb && rm packages-microsoft-prod.deb
   - apt update
-  - apt install dotnet-sdk-6.0
+  - apt install -y dotnet-sdk-6.0
+  # Setup .net 6 - end
   - dotnet publish -r linux-x64 -c Release -p:PublishSingleFile=true -p:PublishReadyToRun=true --self-contained true -o publish ./cli
   - mv ./publish/dug ./publish/dug-linux-x64 #Rename the binary to its architecture type
   - dotnet publish -r linux-arm64 -c Release -p:PublishSingleFile=true -p:PublishReadyToRun=true --self-contained true -o publish ./cli
